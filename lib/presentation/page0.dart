@@ -1,7 +1,3 @@
-import 'dart:ffi';
-
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/cupertino.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -35,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void plusPair() {
     setState(() {
+      //TODO поставить дуракоустойчивость. Не более 9 пар
       _pairCountController.text =
           (int.parse(_pairCountController.text) + 1).toString();
     });
@@ -52,7 +49,34 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           CupertinoButton(
               child: const Icon(CupertinoIcons.minus), onPressed: minusPair),
+          CupertinoButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(builder: (context) => const CalcTable()),
+              );
+            },
+            child: const Text('Next'),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class CalcTable extends StatelessWidget {
+  const CalcTable({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      child: Center(
+        child: CupertinoButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Go back!'),
+        ),
       ),
     );
   }
