@@ -12,6 +12,13 @@ class ScatingScores {
       countOfPositions; //количество мест всего (может отличаться от количества судей и максимальных значений оценок)
   late final int majorityOfJudges; //большинство судей
 
+  ///Конструктор ожидает 3 параметра
+  ///
+  ///inScores Массив строк, олицетворяющих судейские оценки для текущей пары
+  ///
+  ///countOfPositions Всего количество пар в соревновании
+  ///
+  ///pairNumber Номер текущей пары.
   ScatingScores(
       List<String> inScores, final int this.countOfPositions, this.pairNumber) {
     scores =
@@ -35,24 +42,24 @@ class ScatingScores {
 
   int compareTo(ScatingScores two) {
     if (countOfPositions != two.countOfPositions) {
-      return 0;
+      return 0; //TODO это не должно быть здесь
     }
 //правило 5-6
     for (int i = 0; i < countOfPositions; i++) {
-      if (additional[i] != 0 && two.additional[i] != 0) {
-        if ((additional[i] > two.additional[i]) &&
-            (additional[i] >= majorityOfJudges)) {
-          return 1;
-        }
-        if ((additional[i] < two.additional[i]) &&
-            (two.additional[i] >= majorityOfJudges)) {
-          return -1;
-        }
-        if ((additional[i] >= majorityOfJudges) &&
-            (two.additional[i] >= majorityOfJudges)) {
-          break;
-        } // правило 5 ограничивается разбором только до большинства голосов
+      // if (additional[i] != 0 && two.additional[i] != 0) {
+      if ((additional[i] > two.additional[i]) &&
+          (additional[i] >= majorityOfJudges)) {
+        return -1;
       }
+      if ((additional[i] < two.additional[i]) &&
+          (two.additional[i] >= majorityOfJudges)) {
+        return 1;
+      }
+      if ((additional[i] >= majorityOfJudges) &&
+          (two.additional[i] >= majorityOfJudges)) {
+        break;
+      } // правило 5 ограничивается разбором только до большинства голосов
+      //}
 
       // //один из элементов равен нулю - значит для него большинство голосов судей осталось на бОльших местах, значит он точно уже больше, чем другой,у которого на i позиции еще есть судейские оценки.
       // //это условие возможно нужно удалить.
@@ -70,10 +77,10 @@ class ScatingScores {
       if ((additional[i] == two.additional[i]) &&
           additional[i] >= majorityOfJudges) {
         if ((additionalSum[i] > two.additionalSum[i])) {
-          return -1;
+          return 1;
         }
         if ((additionalSum[i] < two.additionalSum[i])) {
-          return 1;
+          return -1;
         }
       }
     }
@@ -82,10 +89,10 @@ class ScatingScores {
     for (int i = 0; i < countOfPositions; i++) {
       if (additional[i] != 0 && two.additional[i] != 0) {
         if ((additional[i] > two.additional[i])) {
-          return 1;
+          return -1;
         }
         if ((additional[i] < two.additional[i])) {
-          return -1;
+          return 1;
         }
       }
     }
@@ -104,7 +111,7 @@ class ScatingScores {
 class ScatingCalc {
   List<ScatingScores> tourneyTable =
       []; //судейские оценки///входящие значения - мап, номерПары:ЕеМестаПоМнениюСудей
-  Map<int, int> positions =
+  Map<int, double> positions =
       {}; // рассчитанные места по скейтингу НомерПары:ИтоговоеМесто
 
   String errorMessage = '';
@@ -120,42 +127,67 @@ class ScatingCalc {
   }
 
   void calculatePositions() {
-    Map<int, int> positions = {};
+    int _pairCount = tourneyTable.length;
+    List<double> avPoints = List.generate(_pairCount, (index) => 0);
     tourneyTable.sort(((a, b) => a.compareTo(b)));
-    for (int i = 0; i < tourneyTable.length; i++) {
-      positions
-          .addEntries(<int, int>{i + 1: tourneyTable[i].pairNumber}.entries);
-    }
-  }
+    for (int i = 0; i < _pairCount; i++) {
+      positions.addEntries(<int, double>{
+        tourneyTable[i].pairNumber: (i + 1).toDouble()
+      }.entries);
 
-  /* int _countRepeat(List<String> inList, String inVal) {
-    int rez = 0;
-    for (var element in inList) {
-      if (element == inVal) {
-        rez += 1;
-      }
-    }
-    return rez;
-  }
-
-  /// находим максимальное значение, количество повторений и первую позицию этого максимального значения в массиве
-  ///
-  List<int> _getMaxAndCount(List<int> inList) {
-    int max = 0;
-    int count = 0;
-    int pos = 0;
-    //for (int element in inList) {
-    for (int i = 0; i < inList.length; i++) {
-      var element = inList[i];
-      if (element > max) {
-        max = element;
-        count = 1;
-        pos = i;
-      } else if (element == max) {
-        count += 1;
+      if (i < _pairCount - 1) {
+        if (tourneyTable[i].compareTo(tourneyTable[i + 1]) == 0) {
+          avPoints[i] = 1;
+          avPoints[i + 1] = 1;
+        }
       }
     }
 
-    return [max, count, pos];
-  } */
+    if (!avPoints.contains(1)) {
+      //если все отличаются, то миссия завершена.
+      return;
+    }
+
+    //Правило 8 - усредняем места, при равенстве всего
+    int predZnach = 0;
+    int sumPos = 0;
+    int kolPos = 0;
+    int startPosition = 0;
+    int endPosition = 0;
+    for (int i = 0; i < _pairCount; i++) {
+      if (avPoints[i] == 1) {
+        if (predZnach == 0) {
+          startPosition = i;
+          sumPos = (i + 1);
+          kolPos = 1;
+        }
+        if (predZnach == 1) {
+          sumPos += (i + 1);
+          kolPos += 1;
+        }
+      }
+      if ((avPoints[i] == 0) && (predZnach == 1)) {
+        endPosition = i - 1;
+        insertTo(avPoints, startPosition, endPosition, sumPos / kolPos);
+      }
+
+      if ((i == _pairCount - 1) && (avPoints[i] == 1)) {
+        endPosition = i;
+        insertTo(avPoints, startPosition, endPosition, sumPos / kolPos);
+      }
+      predZnach = avPoints[i].toInt();
+    }
+
+    for (int i = 0; i < _pairCount; i++) {
+      if (avPoints[i] != 0) {
+        positions[tourneyTable[i].pairNumber] = avPoints[i];
+      }
+    }
+  }
+
+  void insertTo(List<double> inList, int inStart, int inEnd, double inValue) {
+    for (int i = inStart; i <= inEnd; i++) {
+      inList[i] = inValue;
+    }
+  }
 }
