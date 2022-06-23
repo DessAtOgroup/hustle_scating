@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
+///Оценки для одной пары за один танец,
 class ScatingScores {
   late int pairNumber;
   late List<int> scores; //Места, расставленные судьями
@@ -118,6 +119,14 @@ class ScatingCalc {
 
   ScatingCalc();
 
+  ///Пустой конструктор на основе списка пар
+  ScatingCalc.empty(List<int> pairsList) {
+    for (var element in pairsList) {
+      tourneyTable.add(ScatingScores([], pairsList.length, element));
+    }
+  }
+
+  ///Конструтора с расчетом на основе таблицы с оценками
   ScatingCalc.input(List<ScatingScores> this.tourneyTable) {
     calculatePositions();
   }
