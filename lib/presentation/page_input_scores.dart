@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hustle_scating/data/data.dart';
+import 'package:cupertino_list_tile/cupertino_list_tile.dart';
 
 class InputScores extends StatelessWidget {
   final List<ScatingScores> tourneyTable;
@@ -13,6 +14,7 @@ class InputScores extends StatelessWidget {
             text: anotherFold(tourneyTable[index].scores)));
 
     return CupertinoPageScaffold(
+        // navigationBar: CupertinoNavigationBar(middle: Text('Судейские оценки')),
         child: Center(
       child: Form(
         autovalidateMode: AutovalidateMode.always,
@@ -21,6 +23,9 @@ class InputScores extends StatelessWidget {
         },
         child: Column(
           children: [
+            CupertinoListTile(
+              title: Text(''),
+            ),
             CupertinoFormSection.insetGrouped(
               header: const Text('Заполните судейские оценки'),
               children: List<Widget>.generate(tourneyTable.length, (int index) {

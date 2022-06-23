@@ -44,6 +44,7 @@ class _SetPairsState extends State<SetPairs> {
     }
 
     return CupertinoPageScaffold(
+        //  navigationBar: CupertinoNavigationBar(middle: Text('Данные о парах')),
         child: Center(
       child: Form(
         autovalidateMode: AutovalidateMode.always,
@@ -52,6 +53,9 @@ class _SetPairsState extends State<SetPairs> {
         },
         child: Column(
           children: [
+            CupertinoListTile(
+              title: Text(''),
+            ),
             CupertinoListTile(
                 leading: CupertinoButton(
                   child: const Icon(CupertinoIcons.minus),

@@ -9,7 +9,12 @@ class PositionTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> lT = [];
+    List<Widget> lT = [
+      CupertinoListTile(
+        title: Text(''),
+      )
+    ];
+
     positions.forEach((key, value) {
       lT.add(ListTile(
           title: Text('Пара $key.'),
@@ -24,6 +29,7 @@ class PositionTable extends StatelessWidget {
     ));
 
     return Scaffold(
+      // appBar: AppBar(),
       body: Center(child: Column(children: lT)),
     );
   }

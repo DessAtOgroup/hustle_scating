@@ -1,6 +1,3 @@
-import 'dart:ffi';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 ///Оценки для одной пары за один танец,

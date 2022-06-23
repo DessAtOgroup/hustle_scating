@@ -23,52 +23,48 @@ class _MyHomePageState extends State<MyHomePage> {
       navigationBar:
           CupertinoNavigationBar(middle: Text('Калькулятор Скейтинга')),
       child: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CupertinoButton(
-                onPressed: () {
-                  _navigateAndGetPairsData(context);
-                },
-                child: const Text('Ввести данные о парах'),
-              ),
-              CupertinoButton(
-                onPressed: () {
-                  _navigateAndGetScores(
-                    context,
-                  );
-                },
-                child: const Text('Ввести судейские оценки'),
-              ),
-              CupertinoButton(
-                onPressed: () {
-                  Navigator.push(
+        child:
+            // padding: EdgeInsets.symmetric(horizontal: 40),
+            ListView(
+          children: [
+            CupertinoButton(
+              onPressed: () {
+                _navigateAndGetPairsData(context);
+              },
+              child: const Text('Ввести данные о парах'),
+            ),
+            CupertinoButton(
+              onPressed: () {
+                _navigateAndGetScores(
+                  context,
+                );
+              },
+              child: const Text('Ввести судейские оценки'),
+            ),
+            CupertinoButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      builder: (context) =>
+                          PositionTable(positions: _scatingCalc.positions)),
+                );
+              },
+              child: const Text('Посмотреть таблицу мест'),
+            ),
+            CupertinoButton(
+              onPressed: () {
+                Navigator.push(
                     context,
                     CupertinoPageRoute(
-                        builder: (context) =>
-                            PositionTable(positions: _scatingCalc.positions)),
-                  );
-                },
-                child: const Text('Посмотреть таблицу мест'),
+                      builder: (context) => About(),
+                    ));
+              },
+              child: const Text(
+                'О программе',
               ),
-              CupertinoButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => About(),
-                      ));
-                },
-                child: const Text(
-                  style: TextStyle(fontSize: 5),
-                  'О программе',
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
